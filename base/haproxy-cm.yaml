@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: haproxy-config
+  namespace: default
+data:
+  haproxy.cfg: |
+    global
+      log /dev/log local0
+      log /dev/log local1 notice
+      maxconn 2000
+
+    defaults
+      log     global
+      option  httplog
+      timeout connect 6000ms
+      timeout client  60000ms
+      timeout server  60000ms
+
+    frontend http_front
+      bind *:80
+      default_backend http_back
+
+    backend http_back
+      server nginx-backend nginx-backend:80 check inter 2000 rise 3 fall 3 maxconn 200
+      option http-keep-alive
+

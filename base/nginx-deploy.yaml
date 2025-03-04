@@ -1,0 +1,32 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-backend
+  template:
+    metadata:
+      labels:
+        app: nginx-backend
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-backend
+spec:
+  selector:
+    app: nginx-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
